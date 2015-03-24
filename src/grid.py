@@ -34,7 +34,7 @@ def init_grid(grid, init_state):
     dirow = int(len(init_state)/2)
     dicol = int(len(init_state[0])/2)
     for row in range(len(init_state)):
-        for col in range(len(init_state)):
+        for col in range(len(init_state[0])):
             grid[drow+row-dirow][dcol+col-dicol] = init_state[row][col]
     return grid
 
