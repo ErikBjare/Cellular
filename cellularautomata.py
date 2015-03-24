@@ -19,20 +19,9 @@ def neighbors_cross(g, r, c, steps=1):
                       g[r3][c2]]
 
 def neighbors_neumann(g, r, c):
-    # ToDo: Modulo with size of grid to allow "folding" as with normal neighbors
-    # r3 and c3 are redundant
-    r1, r2, r3, r4, r5 = ((r+offset) % len(g) for offset in (-2, -1, 0, 1, 2))
-    c1, c2, c3, c4, c5 = ((c+offset) % len(g[0]) for offset in (-2, -1, 0, 1, 2))
-    old = [                g[r1][c3],
-    	                   g[r2][c3],
-      g[r3][c1], g[r3][c2],           g[r3][c4], g[r3][c5],
-  	                   g[r4][c3],
-    	                   g[r5][c3]]
     inner = neighbors_cross(g, r, c)
     outer = neighbors_cross(g, r, c, steps=2)
-    new = [outer[0], inner[0], outer[1], inner[1], inner[2], outer[2], inner[3], outer[3]]
-    assert new == old
-    return new
+    return [outer[0], inner[0], outer[1], inner[1], inner[2], outer[2], inner[3], outer[3]]
 
 def rule_conway(grid, i, j):
     n = sum(neighbors(grid, i, j))
@@ -42,7 +31,6 @@ def rule_conway(grid, i, j):
     else:
         # Cell is dead
         return 1 if n == 3 else 0
-    
 
 def apply_rule(grid, rule, *args, **kwargs):
     changes = {}
@@ -54,17 +42,15 @@ def apply_rule(grid, rule, *args, **kwargs):
     for k, cell in changes.items():
         grid[k[0]][k[1]] = cell
     return grid
-    # return [rule(grid, i, j) for i, j in combinations(range(rows), range(cols))]   
 
 def rule_refractor(grid, i, j):
     # Excitable medium
     # https://en.wikipedia.org/wiki/Excitable_medium
-    # ToDo: Optimize by doing ==0 first
     if grid[i][j] == 0:
         nn = neighbors_neumann(grid, i, j)
         nc = neighbors_cross(grid, i, j)
         directions = [nn[i:i+2] for i in range(4)]
-        if any([(sum(directions[i]) == 1) and (nc[i] == 1) for i in range(4)]):
+        if any([(sum(directions[i]) == 0) and (nc[i] == 1) for i in range(4)]):
             return 1
         else:
             return 0
@@ -75,10 +61,8 @@ def rule_refractor(grid, i, j):
     elif grid[i][j] > 0:
         # Cell is excited, becomes refractory
         return -1
-           
 
 def rule_circular(grid, i, j, n):
-    # ToDo: Allocate a new_grid
     next_state = (grid[i][j]+1) % n
     if next_state in neighbors(grid, i, j):
         return next_state
@@ -101,7 +85,6 @@ def init_grid(grid, init_state):
 def new_grid(rows, cols):
     return [[0 for _ in range(cols)] for _ in range(rows)]
 
-
 def print_grid(grid, digits=False):
     print("/" + "-"*len(grid[0]) + "\\")
     for row in range(len(grid)):
@@ -118,7 +101,6 @@ def print_grid(grid, digits=False):
                     print("-", end="")
         print("|")
     print("\\" + "-"*len(grid[0]) + "/")
-
 
 def randomize_grid(grid, lower=0, upper=1):
     for r in range(len(grid)):
@@ -160,8 +142,6 @@ class CircularTest(unittest.TestCase):
         for _ in range(10):
             print_grid(self.grid, digits=True)
             self.grid = apply_rule(self.grid, rule_circular, n=5)
-
-        
         
 def main():
     rows = 10
