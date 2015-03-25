@@ -61,6 +61,16 @@ def rule_circular(grid, i, j, n):
         return next_state
     return grid[i][j]
 
+def rule_highlife(grid, i, j):
+    """The Highlife rule"""
+    n = sum(neighbors(grid, i, j))
+    if grid[i][j]:
+        # Is alive
+        return 1 if n in (2, 3) else 0
+    else:
+        # Is dead
+        return 1 if n in (3, 6) else 0
+
 def rule_circuit(grid, i, j):
     """
     Implementation of circuitlife

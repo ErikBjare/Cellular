@@ -29,6 +29,16 @@ def circuit():
         grid = apply_rule(grid, rule_circuit)
         sleep(0.1)
 
+def highlife_replicator():
+    rows = 40
+    cols = 40
+    grid = Grid(rows, cols)
+    grid.write_pattern(HIGHLIFE_REPLICATOR)
+    while True:
+        grid.print(pos_cursor=True)
+        grid = apply_rule(grid, rule_highlife)
+        sleep(0.1)
+
 def main():
     if len(sys.argv) == 1:
         glider_gun()
@@ -37,6 +47,8 @@ def main():
             glider_gun()
         elif sys.argv[1] == "circuit":
             circuit()
+        elif sys.argv[1] == "highlife":
+            highlife_replicator()
 
 
 if __name__ == "__main__":
