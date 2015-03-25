@@ -82,7 +82,7 @@ def rule_circuit(grid, i, j):
             return 2
         else:
             # Cell has no alive neighbors
-            pass
+            return 1
     elif grid[i][j] == 2:
         # Cell is alive, make refactory
         return 3

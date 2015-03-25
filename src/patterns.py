@@ -1,13 +1,23 @@
 GLIDER = [[0, 1, 0],
           [1, 0, 0],
           [1, 1, 1]]
+            
+def char_to_cell(char):
+    if char == ".":
+        return 0
+    elif char == "x":
+        return 1
+    elif char in "0123456789":
+        return int(char)
+    else:
+        raise Exception("Unknown cell value")
 
 def stringlist_to_pattern(stringlist):
     pattern = []
     for row in stringlist:
         pattern.append([])
         for char in row:
-            pattern[-1].append(1 if char == "x" else 0)
+            pattern[-1].append(char_to_cell(char))
     return pattern
 
 
@@ -29,3 +39,11 @@ _GLIDER_GUN = ["..........................................",
                "..........................................",
                ".........................................."]
 GLIDER_GUN = stringlist_to_pattern(_GLIDER_GUN)
+
+
+_CIRCUIT_TRACK = ["...........",
+                  ".111111111.",
+                  ".1.......1.",
+                  ".111111111.",
+                  "..........."]
+CIRCUIT_TRACK = stringlist_to_pattern(_CIRCUIT_TRACK)
