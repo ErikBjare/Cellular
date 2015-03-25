@@ -1,5 +1,9 @@
 from .grid import *
 
+class UnexpectedCellException(Exception):
+    pass
+
+
 # Rule application helper functions
 
 def compute_rule_diff(grid, rule, *args, **kwargs):
@@ -37,10 +41,9 @@ def rule_refractor(grid, i, j):
     # Excitable medium
     # https://en.wikipedia.org/wiki/Excitable_medium
     if grid[i][j] == 0:
-        nn = neighbors_neumann(grid, i, j)
         nc = neighbors_cross(grid, i, j)
-        directions = [nn[i:i+2] for i in range(4)]
-        if any([(sum(directions[i]) == 0) and (nc[i] == 1) for i in range(4)]):
+        nc2 = neighbors_cross(grid, i, j, steps=2)
+        if any([(nc[i] == 1) and (nc2[i] == -1) for i in range(4)]):
             return 1
         else:
             return 0
@@ -57,3 +60,34 @@ def rule_circular(grid, i, j, n):
     if next_state in neighbors(grid, i, j):
         return next_state
     return grid[i][j]
+
+def rule_circuit(grid, i, j):
+    """
+    Implementation of circuitlife
+
+    States:
+     0 - Dead, not part of circuit (an isolator)
+     1 - Dead, part of circuit (conductor)
+     2 - Alive
+     3 - Refractory
+    """
+    if grid[i][j] == 0:
+        # Cell is not part of circuit (isolator)
+        return grid[i][j]
+    elif grid[i][j] == 1:
+        # Cell is part of circuit and not excited or refractory
+        nc = neighbors_cross(grid, i, j)
+        if sum(map(lambda x: 1 if x == 2 else 0, nc)) > 0:
+            # Cell has one alive neighbor
+            return 2
+        else:
+            # Cell has no alive neighbors
+            pass
+    elif grid[i][j] == 2:
+        # Cell is alive, make refactory
+        return 3
+    elif grid[i][j] == 3:
+        # Cell is refractory, return to dead conductor
+        return 1
+    else:
+        raise UnexpectedCellException("Should never happen")

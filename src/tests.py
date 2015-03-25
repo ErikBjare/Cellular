@@ -32,14 +32,12 @@ class RefractorTest(unittest.TestCase):
             self.grid = apply_rule(self.grid, rule_refractor)
 
     def test_wave(self):
-        # TODO: Make it pass (you need to uncomment the lines)
+        """Tests a simple (width=1) wave"""
         self.grid[10][10] = 1
         self.grid[10][9] = -1
-        #print_grid(self.grid)
         apply_rule(self.grid, rule_refractor)
-        #print_grid(self.grid)
-        #self.assertEqual(self.grid[10][11], 1)
-        #self.assertEqual(self.grid[10][10], -1)
+        self.assertEqual(self.grid[10][11], 1)
+        self.assertEqual(self.grid[10][10], -1)
 
 
 
