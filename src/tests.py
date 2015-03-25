@@ -64,13 +64,13 @@ class RefractorTest(AutomataTest):
         self.assertEqual(self.grid[10][10], -1)
 
 
-class CircularTest(AutomataTest):
+class CyclicTest(AutomataTest):
     def setUp(self):
         AutomataTest.setUp(self)
         self.grid = Grid(15, 15)
     
     def rule(self):
-        return apply_rule(self.grid, rule_circular, n=5)
+        return apply_rule(self.grid, rule_cyclic, n=5)
 
     def test_basic(self):
         self.grid.randomize(0, 5)

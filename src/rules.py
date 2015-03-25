@@ -55,7 +55,7 @@ def rule_refractor(grid, i, j):
         # Cell is excited, becomes refractory
         return -1
 
-def rule_circular(grid, i, j, n):
+def rule_cyclic(grid, i, j, n):
     next_state = (grid[i][j]+1) % n
     if next_state in neighbors(grid, i, j):
         return next_state
