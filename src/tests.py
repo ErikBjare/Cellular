@@ -7,10 +7,10 @@ from . import patterns
 
 class ConwayTest(unittest.TestCase):
     def setUp(self):
-        self.grid = new_grid(8, 8)
+        self.grid = Grid(8, 8)
 
     def test_glider(self):
-        init_grid(self.grid, patterns.GLIDER)
+        self.grid.write_pattern(patterns.GLIDER)
         apply_rule(self.grid, rule_conway)
        
         for row in range(len(self.grid)):
@@ -23,10 +23,10 @@ class ConwayTest(unittest.TestCase):
 
 class RefractorTest(unittest.TestCase):
     def setUp(self):
-        self.grid = new_grid(15, 15)
+        self.grid = Grid(15, 15)
 
     def test_basic(self):
-        randomize_grid(self.grid, -1, 1)
+        self.grid.randomize(-1, 1)
         for _ in range(10):
             #print_grid(self.grid)
             self.grid = apply_rule(self.grid, rule_refractor)
@@ -35,7 +35,7 @@ class RefractorTest(unittest.TestCase):
         """Tests a simple (width=1) wave"""
         self.grid[10][10] = 1
         self.grid[10][9] = -1
-        apply_rule(self.grid, rule_refractor)
+        self.grid = apply_rule(self.grid, rule_refractor)
         self.assertEqual(self.grid[10][11], 1)
         self.assertEqual(self.grid[10][10], -1)
 
@@ -43,10 +43,10 @@ class RefractorTest(unittest.TestCase):
 
 class CircularTest(unittest.TestCase):
     def setUp(self):
-        self.grid = new_grid(15, 15)
+        self.grid = Grid(15, 15)
 
     def test_basic(self):
-        randomize_grid(self.grid, 0, 5)
+        self.grid.randomize(0, 5)
         for _ in range(10):
             #print_grid(self.grid, digits=True)
             self.grid = apply_rule(self.grid, rule_circular, n=5)
@@ -54,8 +54,8 @@ class CircularTest(unittest.TestCase):
 
 class CircuitTest(unittest.TestCase):
     def setUp(self):
-        self.grid = new_grid(5, 13)
-        init_grid(self.grid, patterns.CIRCUIT_TRACK)
+        self.grid = Grid(5, 13)
+        self.grid.write_pattern(patterns.CIRCUIT_TRACK)
 
     def test_basic(self):
         self.grid[1][4] = 2
@@ -69,7 +69,7 @@ class CircuitTest(unittest.TestCase):
         self.grid[1][7] = 3
         for _ in range(7):
             self.grid = apply_rule(self.grid, rule_circuit)
-            print_grid(self.grid, digits=True)
+            self.grid.print(digits=True)
 
         self.assertEquals(self.grid[3][7], 2)
         self.assertEquals(self.grid[3][8], 3)
@@ -78,10 +78,10 @@ class CircuitTest(unittest.TestCase):
         self.grid[1][7] = 2
         self.grid[1][8] = 3
         self.grid[2][6] = 1
-        print_grid(self.grid, digits=True)
+        self.grid.print(digits=True)
         for _ in range(3):
             self.grid = apply_rule(self.grid, rule_circuit)
-            print_grid(self.grid, digits=True)
+            self.grid.print(digits=True)
         
         # Check left track
         self.assertEquals(self.grid[1][4], 2)

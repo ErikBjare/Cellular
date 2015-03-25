@@ -1,20 +1,43 @@
 from time import sleep
+import sys
 
 from .grid import *
 from .rules import *
 from .patterns import *
        
 
-
-def main():
+def glider_gun():
     rows = 30
     cols = 60
-    grid = new_grid(rows, cols)
-    grid = init_grid(grid, GLIDER_GUN)
-    for _ in range(50):
-        print_grid(grid)
+    grid = Grid(rows, cols)
+    grid.write_pattern(GLIDER_GUN)
+    while True:
+        grid.print(pos_cursor=True)
         grid = apply_rule(grid, rule_conway)
-        sleep(0.2)
+        sleep(0.1)
+
+def circuit():
+    rows = 5
+    cols = 15
+    grid = Grid(rows, cols)
+    grid.write_pattern(CIRCUIT_TRACK)
+    grid[1][3] = 2
+    grid[1][4] = 3
+    grid[2][7] = 3
+    while True:
+        grid.print(pos_cursor=True)
+        grid = apply_rule(grid, rule_circuit)
+        sleep(0.1)
+
+def main():
+    if len(sys.argv) == 1:
+        glider_gun()
+    else:
+        if sys.argv[1] == "glider":
+            glider_gun()
+        elif sys.argv[1] == "circuit":
+            circuit()
+
 
 if __name__ == "__main__":
     main()

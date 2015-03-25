@@ -1,5 +1,8 @@
 import random
 
+import colorama
+from colorama import Fore
+colorama.init()
 
 # Neighbors helper functions
 
@@ -55,39 +58,57 @@ def neighbors_neumann_extended(g, r, c):
 
 # Grid functions
 
-def new_grid(rows, cols):
-    return [[0 for _ in range(cols)] for _ in range(rows)]
+def _position_cursor(row, col):
+    print("\033[" + str(row) + ";" + str(col) + "H", end="")
 
-def init_grid(grid, init_state):
-    if len(init_state) > len(grid) or len(init_state[0]) > len(grid[0]):
-        raise Exception("Grid size too small for given initializer state")
-    drow = int(len(grid)/2)
-    dcol = int(len(grid[0])/2)
-    dirow = int(len(init_state)/2)
-    dicol = int(len(init_state[0])/2)
-    for row in range(len(init_state)):
-        for col in range(len(init_state[0])):
-            grid[drow+row-dirow][dcol+col-dicol] = init_state[row][col]
-    return grid
+def _clear_term():
+    print("\033[2J", end="")
 
-def print_grid(grid, digits=False):
-    print("/" + "-"*len(grid[0]) + "\\")
-    for row in range(len(grid)):
-        print("|", end="")
-        for col in range(len(grid[0])):
-            if digits:
-                print(grid[row][col], end="")
-            else:
-                if grid[row][col] > 0:
-                    print("+", end="")
-                elif grid[row][col] == 0:
-                    print(" ", end="")
+class Grid():
+    def __init__(self, rows, cols):
+        self._rows = rows
+        self._cols = cols
+        self._grid = [[0 for _ in range(cols)] for _ in range(rows)]
+
+    def __getitem__(self, index):
+        return self._grid[index]
+
+    def __len__(self):
+        return self._rows
+
+    def write_pattern(self, pattern):
+        if len(pattern) > self._rows or len(pattern[0]) > self._cols:
+            raise Exception("Grid size too small for given initializer state")
+        drow = int(self._rows/2)
+        dcol = int(self._cols/2)
+        dirow = int(len(pattern)/2)
+        dicol = int(len(pattern[0])/2)
+        for row in range(len(pattern)):
+            for col in range(len(pattern[0])):
+                self[drow+row-dirow][dcol+col-dicol] = pattern[row][col]
+
+    def randomize(self, lower=0, upper=1):
+        for row in range(self._rows):
+            for col in range(self._cols):
+                self[row][col] = random.randint(lower, upper)
+
+    def print(self, digits=False, color=True, pos_cursor=False):
+        # TODO: Detect if terminal supports color
+        if pos_cursor:
+            _clear_term()
+            _position_cursor(1, 1)
+        print("/" + "-"*self._cols + "\\")
+        for row in range(self._rows):
+            print(Fore.RESET + "|", end="")
+            for col in range(self._cols):
+                if digits:
+                    print(self[row][col], end="")
                 else:
-                    print("-", end="")
-        print("|")
-    print("\\" + "-"*len(grid[0]) + "/")
-
-def randomize_grid(grid, lower=0, upper=1):
-    for r in range(len(grid)):
-        for c in range(len(grid[0])):
-            grid[r][c] = random.randint(lower, upper)
+                    if self[row][col] > 0:
+                        print(Fore.GREEN + str(self[row][col]), end="")
+                    elif self[row][col] == 0:
+                        print(Fore.RESET + " ", end="")
+                    else:
+                        print(Fore.YELLOW + "-", end="")
+            print(Fore.RESET + "|")
+        print("\\" + "-"*self._cols + "/")
