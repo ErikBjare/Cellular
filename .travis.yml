@@ -9,4 +9,4 @@ install:
   - true
 
 script:
-  - python -m unittest src/tests.py
+  - nosetests
