@@ -16,6 +16,14 @@ def _stringlist_to_pattern(stringlist):
             pattern[-1].append(_char_to_cell(char))
     return pattern
 
+def string_to_pattern(string):
+    stringlist = string.split("\n")
+    if stringlist[-1] == "":
+        stringlist = stringlist[:-1]
+    for row in stringlist[1:]:
+        assert len(row) == len(stringlist[0])
+    return _stringlist_to_pattern(stringlist)
+
 def pattern(f, *args, **kwargs):
     """Pattern decorator"""
     return _stringlist_to_pattern(f(*args, **kwargs))
@@ -47,12 +55,20 @@ def GLIDER_GUN():
             ".........................................."]
 
 @pattern
-def CIRCUIT_TRACK():
+def WIREWORLD_TRACK():
     return ["...........",
-            ".111111111.",
+            "..1111111..",
             ".1.......1.",
-            ".111111111.",
+            "..1111111..",
             "..........."]
+
+@pattern
+def WIREWORLD_DIODE():
+    return ["............",
+            ".....11.....",
+            "111111.11111",
+            ".....11.....",
+            "............"]
 
 @pattern
 def HIGHLIFE_REPLICATOR():

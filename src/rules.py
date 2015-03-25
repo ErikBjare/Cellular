@@ -71,27 +71,26 @@ def rule_highlife(grid, i, j):
         # Is dead
         return 1 if n in (3, 6) else 0
 
-def rule_circuit(grid, i, j):
+def rule_wireworld(grid, i, j):
     """
-    Implementation of circuitlife
+    Implementation of Wireworld
 
     States:
      0 - Dead, not part of circuit (an isolator)
      1 - Dead, part of circuit (conductor)
-     2 - Alive
-     3 - Refractory
+     2 - Alive (Electron head)
+     3 - Refractory (Electron tail)
     """
     if grid[i][j] == 0:
         # Cell is not part of circuit (isolator)
         return grid[i][j]
     elif grid[i][j] == 1:
-        # Cell is part of circuit and not excited or refractory
-        nc = neighbors_cross(grid, i, j)
-        if sum(map(lambda x: 1 if x == 2 else 0, nc)) > 0:
-            # Cell has one alive neighbor
+        # Cell is part of circuit and not excited or refractory (conductor)
+        nc = neighbors(grid, i, j)
+        if 3 > sum(map(lambda x: 1 if x == 2 else 0, nc)) > 0:
+            # Cell has exactly one or two alive neighbors
             return 2
         else:
-            # Cell has no alive neighbors
             return 1
     elif grid[i][j] == 2:
         # Cell is alive, make refactory

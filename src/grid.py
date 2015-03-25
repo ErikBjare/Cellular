@@ -70,22 +70,28 @@ class Grid():
         self._cols = cols
         self._grid = [[0 for _ in range(cols)] for _ in range(rows)]
 
+    @classmethod
+    def from_pattern(cls, pattern):
+        self = cls(len(pattern), len(pattern[0]))
+        self.write_pattern(pattern)
+        return self
+
     def __getitem__(self, index):
         return self._grid[index]
 
     def __len__(self):
         return self._rows
 
-    def write_pattern(self, pattern):
-        if len(pattern) > self._rows or len(pattern[0]) > self._cols:
-            raise Exception("Grid size too small for given initializer state")
+    def write_pattern(self, pattern, offset_row=0, offset_col=0):
+        if len(pattern)+offset_row > self._rows or len(pattern[0])+offset_col > self._cols:
+            raise Exception("Grid size too small for given initializer state and offset {}".format((offset_row, offset_col)))
         drow = int(self._rows/2)
         dcol = int(self._cols/2)
         dirow = int(len(pattern)/2)
         dicol = int(len(pattern[0])/2)
         for row in range(len(pattern)):
             for col in range(len(pattern[0])):
-                self[drow+row-dirow][dcol+col-dicol] = pattern[row][col]
+                self[drow+row-dirow+offset_row][dcol+col-dicol+offset_col] = pattern[row][col]
 
     def randomize(self, lower=0, upper=1):
         for row in range(self._rows):
@@ -97,9 +103,9 @@ class Grid():
         if pos_cursor:
             _clear_term()
             _position_cursor(1, 1)
-        print("/" + "-"*self._cols + "\\")
+        print("┏" + "━"*self._cols + "┓")
         for row in range(self._rows):
-            print(Fore.RESET + "|", end="")
+            print(Fore.RESET + "┃", end="")
             for col in range(self._cols):
                 if digits:
                     print(self[row][col], end="")
@@ -110,5 +116,5 @@ class Grid():
                         print(Fore.RESET + " ", end="")
                     else:
                         print(Fore.YELLOW + "-", end="")
-            print(Fore.RESET + "|")
-        print("\\" + "-"*self._cols + "/")
+            print(Fore.RESET + "┃")
+        print("┗" + "━"*self._cols + "┛")
