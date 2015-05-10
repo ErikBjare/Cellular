@@ -1,11 +1,20 @@
 from time import sleep
 import sys
+import argparse
 
 from .grid import *
 from .rules import *
 from .patterns import *
-       
 
+
+_examples = {}
+
+def example(f):
+    """A decorator that registers a function as an example"""
+    _examples[f.__name__] = f
+    return f
+
+@example
 def glider_gun():
     rows = 30
     cols = 60
@@ -16,6 +25,7 @@ def glider_gun():
         grid = apply_rule(grid, rule_conway)
         sleep(0.1)
 
+@example
 def wireworld():
     rows = 5
     cols = 15
@@ -28,6 +38,7 @@ def wireworld():
         grid = apply_rule(grid, rule_wireworld)
         sleep(0.1)
 
+@example
 def wireworld_diodes():
     rows = 9
     cols = 12
@@ -49,6 +60,7 @@ def wireworld_diodes():
         grid = apply_rule(grid, rule_wireworld)
         sleep(0.1)
 
+@example
 def highlife_replicator():
     rows = 40
     cols = 40
@@ -68,22 +80,30 @@ def pattern_from_stdin():
         grid.print(pos_cursor=True)
         grid = apply_rule(grid, rule_conway)
         sleep(0.1)
-    
+
+def run_example(name):
+    _examples[name]()
 
 def main():
-    if len(sys.argv) == 1:
-        glider_gun()
+
+    print(_examples)
+
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--example', dest='example',
+                        help='specify an example to run')
+    parser.add_argument('--from-stdin', dest='from_stdin', action='store_const',
+                        const=True, default=False,
+                        help='load pattern from stdin')
+
+    args = parser.parse_args()
+
+    if args.example:
+        run_example(args.example)
+    elif args.from_stdin:
+        pattern_from_stdin()
     else:
-        if sys.argv[1] == "glider_gun":
-            glider_gun()
-        elif sys.argv[1] == "wireworld":
-            wireworld()
-        elif sys.argv[1] == "wireworld_diode":
-            wireworld_diodes()
-        elif sys.argv[1] == "highlife":
-            highlife_replicator()
-        elif sys.argv[1] == "--":
-            pattern_from_stdin()
+        glider_gun()
+
 
 
 if __name__ == "__main__":
