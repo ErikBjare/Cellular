@@ -3,6 +3,9 @@ import sys
 import argparse
 
 from .grid import *
+from .patterns import *
+from .rules import *
+
 from . import examples
 
 
