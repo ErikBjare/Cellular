@@ -12,6 +12,17 @@ You can then run the program with:
 
     python3 -m src.main 
 
+There are more examples however, you run them with the command:
+
+    python3 -m src.main --examples <example_name>
+
+Some of the available examples are:
+
+ - `glider_gun`
+ - `wireworld`
+ - `wireworld_diodes`
+ - `highlife_replicator`
+
 ## Features
 
 ### Rules
